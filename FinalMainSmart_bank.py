@@ -594,11 +594,17 @@ class SmartBankApp:
             for row in records:
                 tree.insert("", "end", values=row)
 
+        import os  # Make sure this is at the top of your script
+
         def export_to_csv():
+            folder_path = r"D:\Smart_Bank_Management_system Project\transaction_history"
+            os.makedirs(folder_path, exist_ok=True)  # Create the folder if it doesn't exist
+
             selected_type = transaction_type_var.get()
             start_date = start_entry.get()
             end_date = end_entry.get()
 
+            # Create a filename based on filters
             filename = "transaction_history"
             if selected_type != "All":
                 filename = f"{selected_type}_transactions"
@@ -606,14 +612,18 @@ class SmartBankApp:
                 filename += f"_{start_date}_to_{end_date}"
             filename += ".csv"
 
-            with open(filename, "w", newline="", encoding="utf-8") as file:
+            # Full path to save
+            file_path = os.path.join(folder_path, filename)
+
+            # Write CSV
+            with open(file_path, "w", newline="", encoding="utf-8") as file:
                 writer = csv.writer(file)
                 writer.writerow(columns)
                 for row_id in tree.get_children():
                     row = tree.item(row_id)['values']
                     writer.writerow(row)
 
-            messagebox.showinfo("Export", f"📁 Transaction history exported to '{filename}' successfully!")
+            messagebox.showinfo("Export", f"📁 CSV exported successfully to:\n{file_path}")
 
         # Load initial data
         refresh_history()
